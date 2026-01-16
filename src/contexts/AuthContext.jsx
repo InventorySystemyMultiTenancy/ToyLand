@@ -5,27 +5,40 @@ const AuthContext = createContext({});
 
 export function AuthProvider({ children }) {
   const [usuario, setUsuario] = useState(null);
+  const [empresa, setEmpresa] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     const usuarioSalvo = localStorage.getItem("usuario");
+    const empresaSalva = localStorage.getItem("empresa");
 
     if (token && usuarioSalvo) {
       setUsuario(JSON.parse(usuarioSalvo));
+      if (empresaSalva) setEmpresa(JSON.parse(empresaSalva));
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     }
-
     setLoading(false);
   }, []);
 
   const login = async (email, senha) => {
     try {
       const response = await api.post("/auth/login", { email, senha });
-      const { token, usuario: usuarioData } = response.data;
+      const {
+        token,
+        usuario: usuarioData,
+        empresa: empresaData,
+      } = response.data;
 
       localStorage.setItem("token", token);
       localStorage.setItem("usuario", JSON.stringify(usuarioData));
+      if (empresaData) {
+        localStorage.setItem("empresa", JSON.stringify(empresaData));
+        setEmpresa(empresaData);
+      } else {
+        localStorage.removeItem("empresa");
+        setEmpresa(null);
+      }
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       setUsuario(usuarioData);
@@ -46,10 +59,21 @@ export function AuthProvider({ children }) {
         senha,
         telefone,
       });
-      const { token, usuario: usuarioData } = response.data;
+      const {
+        token,
+        usuario: usuarioData,
+        empresa: empresaData,
+      } = response.data;
 
       localStorage.setItem("token", token);
       localStorage.setItem("usuario", JSON.stringify(usuarioData));
+      if (empresaData) {
+        localStorage.setItem("empresa", JSON.stringify(empresaData));
+        setEmpresa(empresaData);
+      } else {
+        localStorage.removeItem("empresa");
+        setEmpresa(null);
+      }
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       setUsuario(usuarioData);
@@ -65,8 +89,10 @@ export function AuthProvider({ children }) {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("usuario");
+    localStorage.removeItem("empresa");
     delete api.defaults.headers.common["Authorization"];
     setUsuario(null);
+    setEmpresa(null);
   };
 
   const isAdmin = () => usuario?.role === "ADMIN";
@@ -75,6 +101,7 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         usuario,
+        empresa,
         loading,
         login,
         registrar,
