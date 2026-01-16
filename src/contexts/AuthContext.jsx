@@ -8,22 +8,63 @@ export function AuthProvider({ children }) {
   const [empresa, setEmpresa] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Função para extrair o subdomínio
+  const getSubdomain = () => {
+    const hostname = window.location.hostname;
+    const parts = hostname.split(".");
+
+    // Se for localhost ou IP, retorna null
+    if (hostname === "localhost" || /^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
+      return null;
+    }
+
+    // Se tiver mais de 2 partes (ex: toyland.selfmachine.com.br)
+    if (parts.length > 2) {
+      return parts[0]; // retorna 'toyland'
+    }
+
+    return null;
+  };
+
   useEffect(() => {
+    const buscarEmpresaPorSubdominio = async () => {
+      const subdomain = getSubdomain();
+
+      if (subdomain) {
+        try {
+          const response = await api.get(`/empresas/subdomain/${subdomain}`);
+          const empresaData = response.data;
+          localStorage.setItem("empresa", JSON.stringify(empresaData));
+          setEmpresa(empresaData);
+        } catch (error) {
+          console.error("Erro ao buscar empresa por subdomínio:", error);
+          localStorage.removeItem("empresa");
+          setEmpresa(null);
+        }
+      }
+    };
+
     const token = localStorage.getItem("token");
     const usuarioSalvo = localStorage.getItem("usuario");
-    const empresaSalva = localStorage.getItem("empresa");
 
     if (token && usuarioSalvo) {
       setUsuario(JSON.parse(usuarioSalvo));
-      if (empresaSalva) setEmpresa(JSON.parse(empresaSalva));
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     }
-    setLoading(false);
+
+    buscarEmpresaPorSubdominio().finally(() => setLoading(false));
   }, []);
 
   const login = async (email, senha) => {
     try {
-      const response = await api.post("/auth/login", { email, senha });
+      const subdomain = getSubdomain();
+      // Se for SUPER_ADMIN, não envia subdomain
+      const response = await api.post("/auth/login", {
+        email,
+        senha,
+        subdomain: subdomain || undefined,
+      });
+
       const {
         token,
         usuario: usuarioData,
@@ -32,16 +73,22 @@ export function AuthProvider({ children }) {
 
       localStorage.setItem("token", token);
       localStorage.setItem("usuario", JSON.stringify(usuarioData));
-      if (empresaData) {
+
+      // Se SUPER_ADMIN, não restringe empresa
+      if (usuarioData?.role === "SUPER_ADMIN") {
+        localStorage.removeItem("empresa");
+        setEmpresa(null);
+      } else if (empresaData) {
         localStorage.setItem("empresa", JSON.stringify(empresaData));
         setEmpresa(empresaData);
       } else {
         localStorage.removeItem("empresa");
         setEmpresa(null);
       }
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       setUsuario(usuarioData);
+
       return { success: true };
     } catch (error) {
       return {
@@ -53,12 +100,15 @@ export function AuthProvider({ children }) {
 
   const registrar = async (nome, email, senha, telefone) => {
     try {
+      const subdomain = getSubdomain();
       const response = await api.post("/auth/registrar", {
         nome,
         email,
         senha,
         telefone,
+        subdomain,
       });
+
       const {
         token,
         usuario: usuarioData,
@@ -67,6 +117,7 @@ export function AuthProvider({ children }) {
 
       localStorage.setItem("token", token);
       localStorage.setItem("usuario", JSON.stringify(usuarioData));
+
       if (empresaData) {
         localStorage.setItem("empresa", JSON.stringify(empresaData));
         setEmpresa(empresaData);
@@ -74,9 +125,10 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("empresa");
         setEmpresa(null);
       }
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       setUsuario(usuarioData);
+
       return { success: true };
     } catch (error) {
       return {
@@ -96,6 +148,7 @@ export function AuthProvider({ children }) {
   };
 
   const isAdmin = () => usuario?.role === "ADMIN";
+  const isSuperAdmin = () => usuario?.role === "SUPER_ADMIN";
 
   return (
     <AuthContext.Provider
@@ -107,7 +160,9 @@ export function AuthProvider({ children }) {
         registrar,
         logout,
         isAdmin,
+        isSuperAdmin,
         signed: !!usuario,
+        subdomain: getSubdomain(),
       }}
     >
       {children}
