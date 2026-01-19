@@ -30,13 +30,14 @@ export function Lojas() {
   const carregarLojas = async () => {
     try {
       setLoading(true);
+      // Carrega lojas da empresa do subdomínio
       const response = await api.get("/lojas");
       setLojas(response.data);
       setError("");
     } catch (error) {
       setError(
         "Erro ao carregar lojas: " +
-          (error.response?.data?.error || error.message)
+          (error.response?.data?.error || error.message),
       );
     } finally {
       setLoading(false);
@@ -53,7 +54,7 @@ export function Lojas() {
       setDeleteDialog({ open: false, lojaId: null });
       setError(
         "Erro ao excluir loja: " +
-          (error.response?.data?.error || error.message)
+          (error.response?.data?.error || error.message),
       );
     }
   };
@@ -291,7 +292,7 @@ export function Lojas() {
                 <p className="text-3xl font-bold">
                   {lojas.reduce(
                     (acc, loja) => acc + (loja.maquinas?.length || 0),
-                    0
+                    0,
                   )}
                 </p>
               </div>

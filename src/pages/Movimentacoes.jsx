@@ -76,6 +76,28 @@ export function Movimentacoes() {
 
   // --- EFEITOS ---
   useEffect(() => {
+    const carregarDados = async () => {
+      setLoading(true);
+      try {
+        const [movRes, maqRes, prodRes, lojasRes] = await Promise.all([
+          api.get("/movimentacoes"),
+          api.get("/maquinas"),
+          api.get("/produtos"),
+          api.get("/lojas"),
+        ]);
+        setMovimentacoes(movRes.data);
+        setMaquinas(maqRes.data);
+        setProdutos(prodRes.data);
+        setLojas(lojasRes.data);
+      } catch (error) {
+        setError(
+          "Erro ao carregar dados: " +
+            (error.response?.data?.error || error.message),
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
     carregarDados();
     carregarMovimentacoesEstoqueLoja();
   }, []);
@@ -91,28 +113,6 @@ export function Movimentacoes() {
   }, [formData.maquina_id, maquinas]);
 
   // --- FUNÇÕES DE CARREGAMENTO ---
-  const carregarDados = async () => {
-    try {
-      setLoading(true);
-      const [movRes, maqRes, prodRes, lojasRes] = await Promise.all([
-        api.get("/movimentacoes"),
-        api.get("/maquinas"),
-        api.get("/produtos"),
-        api.get("/lojas"),
-      ]);
-
-      setMovimentacoes(movRes.data || []);
-      setMaquinas(maqRes.data || []);
-      setProdutos(prodRes.data || []);
-      setLojas(lojasRes.data || []);
-    } catch (err) {
-      console.error("Erro ao carregar dados:", err);
-      setError("Erro ao carregar dados iniciais.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const carregarMovimentacoesEstoqueLoja = async () => {
     try {
       const res = await api.get("/movimentacao-estoque-loja");
@@ -120,7 +120,7 @@ export function Movimentacoes() {
     } catch (error) {
       console.error(
         "Erro ao carregar movimentações de estoque de loja:",
-        error
+        error,
       );
       setMovimentacoesEstoqueLoja([]);
     }
@@ -178,7 +178,7 @@ export function Movimentacoes() {
       console.log("   📌 Quantidade atual informada (totalPre):", totalPre);
       console.log(
         "   📌 Quantidade adicionada (abastecidas):",
-        quantidadeAdicionada
+        quantidadeAdicionada,
       );
       console.log("   📌 Calculado que saiu (sairam):", quantidadeSaiu);
       console.log("   📌 Novo total (totalPos):", totalPos);
@@ -228,7 +228,7 @@ export function Movimentacoes() {
         formData.maquina_id,
         "(tipo:",
         typeof formData.maquina_id,
-        ")"
+        ")",
       );
       movimentacoesMaquina = movimentacoes
         .filter((m) => {
@@ -242,7 +242,7 @@ export function Movimentacoes() {
             formData.maquina_id,
             "(tipo:",
             typeof formData.maquina_id,
-            ")"
+            ")",
           );
           return id1 === formData.maquina_id;
         })
@@ -278,7 +278,7 @@ export function Movimentacoes() {
       setError(
         error.response?.data?.error ||
           error.response?.data?.message ||
-          "Erro ao registrar movimentação"
+          "Erro ao registrar movimentação",
       );
     } finally {
       setSalvandoMovimentacao(false);
@@ -374,7 +374,7 @@ export function Movimentacoes() {
   const saidas = movimentacoes.filter((m) => m.sairam > 0);
   const totalEntradas = entradas.reduce(
     (sum, m) => sum + (m.abastecidas || 0),
-    0
+    0,
   );
   const totalSaidas = saidas.reduce((sum, m) => sum + (m.sairam || 0), 0);
 
@@ -733,7 +733,7 @@ export function Movimentacoes() {
                       {Math.max(
                         0,
                         estoqueAnterior -
-                          parseInt(formData.quantidadeAtualMaquina || 0)
+                          parseInt(formData.quantidadeAtualMaquina || 0),
                       )}{" "}
                       unidades
                     </p>
@@ -891,7 +891,7 @@ export function Movimentacoes() {
                     </option>
                     {maquinas
                       .filter(
-                        (m) => !filtroLojaForm || m.lojaId === filtroLojaForm
+                        (m) => !filtroLojaForm || m.lojaId === filtroLojaForm,
                       )
                       .map((maquina) => (
                         <option key={maquina.id} value={maquina.id}>
@@ -1132,13 +1132,13 @@ export function Movimentacoes() {
                     <strong>Data:</strong>{" "}
                     {new Date(
                       editandoMovimentacao.dataColeta ||
-                        editandoMovimentacao.createdAt
+                        editandoMovimentacao.createdAt,
                     ).toLocaleString("pt-BR")}
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
                     <strong>Máquina:</strong>{" "}
                     {maquinas.find(
-                      (m) => m.id === editandoMovimentacao.maquinaId
+                      (m) => m.id === editandoMovimentacao.maquinaId,
                     )?.codigo || "N/A"}
                   </p>
                 </div>
@@ -1313,7 +1313,7 @@ export function Movimentacoes() {
                             editandoEstoqueLoja.produtosEnviados.map((p, i) =>
                               i === idx
                                 ? { ...p, quantidade: e.target.value }
-                                : p
+                                : p,
                             );
                           setEditandoEstoqueLoja({
                             ...editandoEstoqueLoja,
@@ -1329,7 +1329,7 @@ export function Movimentacoes() {
                             editandoEstoqueLoja.produtosEnviados.map((p, i) =>
                               i === idx
                                 ? { ...p, tipoMovimentacao: e.target.value }
-                                : p
+                                : p,
                             );
                           setEditandoEstoqueLoja({
                             ...editandoEstoqueLoja,

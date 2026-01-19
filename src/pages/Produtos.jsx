@@ -33,6 +33,7 @@ export function Produtos() {
   const carregarProdutos = async () => {
     try {
       setLoading(true);
+      // Carrega produtos da empresa do subdomínio
       const urlProdutos = mostrarInativos
         ? "/produtos?incluirInativos=true"
         : "/produtos";
@@ -41,7 +42,7 @@ export function Produtos() {
     } catch (error) {
       setError(
         "Erro ao carregar produtos: " +
-          (error.response?.data?.error || error.message)
+          (error.response?.data?.error || error.message),
       );
     } finally {
       setLoading(false);
@@ -57,7 +58,7 @@ export function Produtos() {
         setSuccess("✅ Produto excluído permanentemente com sucesso!");
       } else {
         setSuccess(
-          "⚠️ Produto desativado! Clique novamente em excluir para deletar permanentemente."
+          "⚠️ Produto desativado! Clique novamente em excluir para deletar permanentemente.",
         );
       }
 
@@ -67,7 +68,7 @@ export function Produtos() {
     } catch (error) {
       setError(
         "Erro ao excluir produto: " +
-          (error.response?.data?.error || error.message)
+          (error.response?.data?.error || error.message),
       );
       setDeleteId(null);
       setProdutoParaDeletar(null);

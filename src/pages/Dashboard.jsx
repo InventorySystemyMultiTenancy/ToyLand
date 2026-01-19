@@ -20,6 +20,7 @@ export function Dashboard() {
     useState(false);
   // Estados para busca e navegação (deve vir antes do uso em modais)
   const [searchTerm, setSearchTerm] = useState("");
+  // Todas as requisições já são filtradas pelo subdomínio via header (api.js)
   const [lojas, setLojas] = useState([]);
   const [maquinas, setMaquinas] = useState([]);
   const [produtos, setProdutos] = useState([]);
@@ -75,11 +76,11 @@ export function Dashboard() {
     // Removido setMovimentacaoSucesso
     try {
       const produtosValidos = produtosMovimentacao.filter(
-        (p) => p.produtoId && Number(p.quantidade) > 0
+        (p) => p.produtoId && Number(p.quantidade) > 0,
       );
       if (!movimentacaoLojaId || produtosValidos.length === 0) {
         setMovimentacaoErro(
-          "Preencha todos os campos obrigatórios e adicione pelo menos um produto válido."
+          "Preencha todos os campos obrigatórios e adicione pelo menos um produto válido.",
         );
         setMovimentacaoEnviando(false);
         return;
@@ -288,7 +289,7 @@ export function Dashboard() {
     try {
       const isAdmin = usuario?.role === "ADMIN";
 
-      // Buscar lojas e máquinas (acessível para todos)
+      // Buscar lojas, máquinas e produtos da empresa do subdomínio
       const requisicoes = [
         api.get("/lojas").catch((err) => {
           console.error("Erro ao carregar lojas:", err.message);
@@ -314,7 +315,7 @@ export function Dashboard() {
           api.get("/relatorios/balanco-semanal").catch((err) => {
             console.error("Erro ao carregar balanço:", err.message);
             return { data: null };
-          })
+          }),
         );
       }
 
@@ -340,7 +341,7 @@ export function Dashboard() {
         console.log("Total de Fichas:", balancoRes.data?.totais?.totalFichas);
         console.log(
           "Total de Faturamento:",
-          balancoRes.data?.totais?.totalFaturamento
+          balancoRes.data?.totais?.totalFaturamento,
         );
       }
 
@@ -383,10 +384,10 @@ export function Dashboard() {
           .catch((err) => {
             console.error(
               `Erro ao carregar alertas da loja ${loja.nome}:`,
-              err.message
+              err.message,
             );
             return { lojaId: loja.id, lojaNome: loja.nome, alertas: [] };
-          })
+          }),
       );
 
       const alertasTodasLojas = await Promise.all(alertasPromises);
@@ -416,7 +417,7 @@ export function Dashboard() {
     try {
       setLoadingEstoque(true);
 
-      // 1. Buscar todas as lojas
+      // 1. Buscar todas as lojas da empresa do subdomínio
       const lojasRes = await api.get("/lojas");
       const lojas = lojasRes.data || [];
 
@@ -432,7 +433,7 @@ export function Dashboard() {
             totalProdutos: estoque.length,
             totalUnidades: estoque.reduce(
               (sum, item) => sum + item.quantidade,
-              0
+              0,
             ),
           };
         } catch (error) {
@@ -574,7 +575,7 @@ export function Dashboard() {
   const abrirEdicaoEstoque = (loja) => {
     // Criar um mapa dos produtos já cadastrados no estoque
     const estoqueMap = new Map(
-      loja.estoque.map((item) => [item.produtoId, item])
+      loja.estoque.map((item) => [item.produtoId, item]),
     );
 
     // Criar lista completa com todos os produtos do sistema
@@ -613,7 +614,7 @@ export function Dashboard() {
       estoque: prev.estoque.map((item) =>
         item.produtoId === produtoId
           ? { ...item, quantidade: parseInt(novaQuantidade) || 0 }
-          : item
+          : item,
       ),
     }));
   };
@@ -624,7 +625,7 @@ export function Dashboard() {
       estoque: prev.estoque.map((item) =>
         item.produtoId === produtoId
           ? { ...item, estoqueMinimo: parseInt(novoMinimo) || 0 }
-          : item
+          : item,
       ),
     }));
   };
@@ -633,7 +634,7 @@ export function Dashboard() {
     setEstoqueEditando((prev) => ({
       ...prev,
       estoque: prev.estoque.map((item) =>
-        item.produtoId === produtoId ? { ...item, ativo: !item.ativo } : item
+        item.produtoId === produtoId ? { ...item, ativo: !item.ativo } : item,
       ),
     }));
   };
@@ -648,7 +649,7 @@ export function Dashboard() {
   // Função para imprimir relatório individual de uma loja
   const imprimirRelatorioLoja = (loja) => {
     const itensParaComprar = loja.estoque.filter(
-      (item) => item.quantidade < item.estoqueMinimo
+      (item) => item.quantidade < item.estoqueMinimo,
     );
 
     const htmlContent = `
@@ -738,7 +739,7 @@ export function Dashboard() {
               loja.endereco || "Não informado"
             }</p>
             <p><strong>Data:</strong> ${new Date().toLocaleDateString(
-              "pt-BR"
+              "pt-BR",
             )} às ${new Date().toLocaleTimeString("pt-BR")}</p>
           </div>
 
@@ -768,8 +769,8 @@ export function Dashboard() {
                   return `
                     <tr ${abaixo ? 'class="alerta"' : ""}>
                       <td>${item.produto.emoji || "📦"} ${
-                    item.produto.nome
-                  }</td>
+                        item.produto.nome
+                      }</td>
                       <td>${item.produto.codigo || "-"}</td>
                       <td>${item.quantidade}</td>
                       <td>${item.estoqueMinimo}</td>
@@ -801,8 +802,8 @@ export function Dashboard() {
                     return `
                       <tr>
                         <td>${item.produto.emoji || "📦"} ${
-                      item.produto.nome
-                    }</td>
+                          item.produto.nome
+                        }</td>
                         <td>${item.quantidade}</td>
                         <td>${item.estoqueMinimo}</td>
                         <td><strong>${sugestao} unidades</strong></td>
@@ -862,7 +863,7 @@ export function Dashboard() {
     const produtosNecessarios = Object.values(necessidadesPorProduto);
     const totalItensComprar = produtosNecessarios.reduce(
       (acc, p) => acc + p.totalNecessario,
-      0
+      0,
     );
 
     const htmlContent = `
@@ -961,7 +962,7 @@ export function Dashboard() {
           <div class="header">
             <h1>🛒 Relatório Consolidado de Compras</h1>
             <p><strong>Data:</strong> ${new Date().toLocaleDateString(
-              "pt-BR"
+              "pt-BR",
             )} às ${new Date().toLocaleTimeString("pt-BR")}</p>
           </div>
 
@@ -992,8 +993,8 @@ export function Dashboard() {
                       <tr>
                         <td>
                           <strong>${item.produto.emoji || "📦"} ${
-                      item.produto.nome
-                    }</strong><br>
+                            item.produto.nome
+                          }</strong><br>
                           <small>Cód: ${item.produto.codigo || "-"}</small>
                         </td>
                         <td style="font-size: 18px; font-weight: bold; color: #FF69B4;">
@@ -1019,14 +1020,14 @@ export function Dashboard() {
                                     <td>${l.minimo}</td>
                                     <td><strong>${l.necessario}</strong></td>
                                   </tr>
-                                `
+                                `,
                                 )
                                 .join("")}
                             </tbody>
                           </table>
                         </td>
                       </tr>
-                    `
+                    `,
                   )
                   .join("")}
                 <tr class="total-row">
@@ -1061,11 +1062,11 @@ export function Dashboard() {
 
       // Filtrar apenas produtos ativos (marcados para aparecer)
       const produtosAtivos = estoqueEditando.estoque.filter(
-        (item) => item.ativo
+        (item) => item.ativo,
       );
 
       console.log(
-        `📊 Salvando ${produtosAtivos.length} produtos ativos no estoque`
+        `📊 Salvando ${produtosAtivos.length} produtos ativos no estoque`,
       );
 
       // Salvar produtos ativos
@@ -1075,7 +1076,7 @@ export function Dashboard() {
           // Se não tem ID, usar POST para criar
           if (item.id) {
             console.log(
-              `✏️ Atualizando produto ${item.produtoNome} (ID: ${item.id})`
+              `✏️ Atualizando produto ${item.produtoNome} (ID: ${item.id})`,
             );
             await api.put(
               `/estoque-lojas/${estoqueEditando.lojaId}/${item.produtoId}`,
@@ -1083,11 +1084,11 @@ export function Dashboard() {
                 quantidade: item.quantidade || 0,
                 estoqueMinimo: item.estoqueMinimo || 0,
                 ativo: item.ativo,
-              }
+              },
             );
           } else {
             console.log(
-              `➕ Criando novo produto ${item.produtoNome} no estoque`
+              `➕ Criando novo produto ${item.produtoNome} no estoque`,
             );
             await api.post(`/estoque-lojas/${estoqueEditando.lojaId}`, {
               produtoId: item.produtoId,
@@ -1099,14 +1100,14 @@ export function Dashboard() {
         } catch (itemError) {
           console.error(
             `❌ Erro ao salvar produto ${item.produtoId}:`,
-            itemError.response?.data || itemError.message
+            itemError.response?.data || itemError.message,
           );
         }
       }
 
       // Remover produtos que foram desmarcados (se tinham id)
       const produtosInativos = estoqueEditando.estoque.filter(
-        (item) => !item.ativo && item.id
+        (item) => !item.ativo && item.id,
       );
 
       for (const item of produtosInativos) {
@@ -1119,13 +1120,13 @@ export function Dashboard() {
         });
         try {
           await api.delete(
-            `/estoque-lojas/${estoqueEditando.lojaId}/${item.produtoId}`
+            `/estoque-lojas/${estoqueEditando.lojaId}/${item.produtoId}`,
           );
           console.log(`🗑️ Removido produto ${item.produtoNome} do estoque`);
         } catch (deleteError) {
           console.error(
             `❌ Erro ao remover produto ${item.produtoId}:`,
-            deleteError.response?.data || deleteError.message
+            deleteError.response?.data || deleteError.message,
           );
         }
       }
@@ -1137,7 +1138,7 @@ export function Dashboard() {
       console.error("Erro ao salvar estoque:", error);
       alert(
         "Erro ao salvar estoque: " +
-          (error.response?.data?.error || error.message)
+          (error.response?.data?.error || error.message),
       );
     } finally {
       setSalvandoEstoque(false);
@@ -1170,7 +1171,7 @@ export function Dashboard() {
         const movimentacoesOrdenadas = movimentacoes.sort(
           (a, b) =>
             new Date(b.dataColeta || b.createdAt) -
-            new Date(a.dataColeta || a.createdAt)
+            new Date(a.dataColeta || a.createdAt),
         );
         const ultimaMov = movimentacoesOrdenadas[0];
         const produtoId = ultimaMov.detalhesProdutos?.[0]?.produtoId;
@@ -1207,7 +1208,7 @@ export function Dashboard() {
   const lojasFiltradas = lojas.filter(
     (loja) =>
       loja.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      loja.endereco?.toLowerCase().includes(searchTerm.toLowerCase())
+      loja.endereco?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   // Máquinas da loja selecionada
@@ -1355,7 +1356,7 @@ export function Dashboard() {
               className="stat-card bg-linear-to-br from-red-500 to-red-600 p-4 sm:p-6 rounded-xl shadow-md flex flex-col justify-between min-h-30 cursor-pointer"
               onClick={() => {
                 const alertSection = document.getElementById(
-                  "alertas-estoque-maquinas"
+                  "alertas-estoque-maquinas",
                 );
                 if (alertSection) {
                   alertSection.scrollIntoView({ behavior: "smooth" });
@@ -1444,7 +1445,7 @@ export function Dashboard() {
                       {stats.balanco.distribuicaoLojas.reduce(
                         (total, loja) =>
                           total + (loja.produtosVendidos || loja.sairam || 0),
-                        0
+                        0,
                       )}
                     </span>
                     <span className="text-lg sm:text-2xl text-gray-600">
@@ -1514,7 +1515,7 @@ export function Dashboard() {
                                       {quantidade}
                                     </span>
                                   </div>
-                                )
+                                ),
                               )}
                             </div>
                           </div>
@@ -1582,7 +1583,7 @@ export function Dashboard() {
                       } catch (erro) {
                         setMovimentacaoErro(
                           "Erro ao registrar movimentação. Tente novamente.",
-                          erro.response?.data?.error || erro.message
+                          erro.response?.data?.error || erro.message,
                         );
                       } finally {
                         setMovimentacaoEnviando(false);
@@ -1619,7 +1620,7 @@ export function Dashboard() {
                             handleProdutoChange(
                               idx,
                               "produtoId",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           className="input-field flex-1"
@@ -1642,7 +1643,7 @@ export function Dashboard() {
                             handleProdutoChange(
                               idx,
                               "quantidade",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           placeholder="Qtd"
@@ -1657,7 +1658,7 @@ export function Dashboard() {
                             handleProdutoChange(
                               idx,
                               "tipoMovimentacao",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           className="input-field w-28"
@@ -2090,7 +2091,7 @@ export function Dashboard() {
               {lojasFiltradas.length > 0 ? (
                 lojasFiltradas.map((loja) => {
                   const qtdMaquinas = maquinas.filter(
-                    (m) => m.lojaId === loja.id
+                    (m) => m.lojaId === loja.id,
                   ).length;
                   return (
                     <div
@@ -2155,13 +2156,13 @@ export function Dashboard() {
                   if (maquina.movimentacoes) {
                     console.log(
                       `Movimentações da máquina ${maquina.codigo}:`,
-                      maquina.movimentacoes
+                      maquina.movimentacoes,
                     );
                   }
                   if (maquina.sairam !== undefined) {
                     console.log(
                       `Saíram da máquina ${maquina.codigo}:`,
-                      maquina.sairam
+                      maquina.sairam,
                     );
                   }
                   return (
@@ -2438,11 +2439,11 @@ export function Dashboard() {
                               </Badge>
                               <span className="text-sm text-gray-600">
                                 {new Date(mov.createdAt).toLocaleDateString(
-                                  "pt-BR"
+                                  "pt-BR",
                                 )}{" "}
                                 às{" "}
                                 {new Date(mov.createdAt).toLocaleTimeString(
-                                  "pt-BR"
+                                  "pt-BR",
                                 )}
                               </span>
                             </div>
@@ -2557,8 +2558,8 @@ export function Dashboard() {
                     alerta.nivelAlerta === "CRÍTICO"
                       ? "bg-linear-to-r from-red-50 to-red-100/50 border-red-500 shadow-red-100 shadow-md"
                       : alerta.nivelAlerta === "ALTO"
-                      ? "bg-linear-to-r from-orange-50 to-orange-100/50 border-orange-500 shadow-orange-100 shadow-md"
-                      : "bg-linear-to-r from-yellow-50 to-yellow-100/50 border-yellow-500 shadow-yellow-100 shadow-md"
+                        ? "bg-linear-to-r from-orange-50 to-orange-100/50 border-orange-500 shadow-orange-100 shadow-md"
+                        : "bg-linear-to-r from-yellow-50 to-yellow-100/50 border-yellow-500 shadow-yellow-100 shadow-md"
                   }`}
                 >
                   <div className="flex justify-between items-start">
@@ -2619,8 +2620,8 @@ export function Dashboard() {
                       alerta.nivelAlerta === "CRÍTICO"
                         ? "bg-linear-to-r from-red-50 to-red-100/50 border-red-500 shadow-red-100 shadow-md"
                         : alerta.nivelAlerta === "ALTO"
-                        ? "bg-linear-to-r from-orange-50 to-orange-100/50 border-orange-500 shadow-orange-100 shadow-md"
-                        : "bg-linear-to-r from-yellow-50 to-yellow-100/50 border-yellow-500 shadow-yellow-100 shadow-md"
+                          ? "bg-linear-to-r from-orange-50 to-orange-100/50 border-orange-500 shadow-orange-100 shadow-md"
+                          : "bg-linear-to-r from-yellow-50 to-yellow-100/50 border-yellow-500 shadow-yellow-100 shadow-md"
                     }`}
                   >
                     <div className="flex justify-between items-start">
@@ -2693,15 +2694,15 @@ export function Dashboard() {
                 const percentualAtual =
                   alerta.estoqueMinimo > 0
                     ? Math.round(
-                        (alerta.quantidade / alerta.estoqueMinimo) * 100
+                        (alerta.quantidade / alerta.estoqueMinimo) * 100,
                       )
                     : 0;
                 const nivelAlerta =
                   percentualAtual <= 25
                     ? "CRÍTICO"
                     : percentualAtual <= 50
-                    ? "ALTO"
-                    : "MÉDIO";
+                      ? "ALTO"
+                      : "MÉDIO";
 
                 return (
                   <div
@@ -2710,8 +2711,8 @@ export function Dashboard() {
                       nivelAlerta === "CRÍTICO"
                         ? "bg-linear-to-r from-red-50 to-red-100/50 border-red-500 shadow-red-100 shadow-md"
                         : nivelAlerta === "ALTO"
-                        ? "bg-linear-to-r from-orange-50 to-orange-100/50 border-orange-500 shadow-orange-100 shadow-md"
-                        : "bg-linear-to-r from-yellow-50 to-yellow-100/50 border-yellow-500 shadow-yellow-100 shadow-md"
+                          ? "bg-linear-to-r from-orange-50 to-orange-100/50 border-orange-500 shadow-orange-100 shadow-md"
+                          : "bg-linear-to-r from-yellow-50 to-yellow-100/50 border-yellow-500 shadow-yellow-100 shadow-md"
                     }`}
                   >
                     <div className="flex justify-between items-start">
@@ -3087,7 +3088,7 @@ export function Dashboard() {
                         (i) =>
                           i.ativo &&
                           i.quantidade < i.estoqueMinimo &&
-                          i.estoqueMinimo > 0
+                          i.estoqueMinimo > 0,
                       ).length
                     }
                   </p>
@@ -3110,8 +3111,8 @@ export function Dashboard() {
                           abaixoDoMinimo
                             ? "bg-red-50 shadow-md"
                             : item.ativo
-                            ? "bg-white hover:border-primary/30"
-                            : "bg-gray-50 opacity-60"
+                              ? "bg-white hover:border-primary/30"
+                              : "bg-gray-50 opacity-60"
                         }`}
                       >
                         <div className="flex items-start gap-4">
@@ -3163,7 +3164,7 @@ export function Dashboard() {
                                   onChange={(e) =>
                                     atualizarQuantidadeEstoque(
                                       item.produtoId,
-                                      e.target.value
+                                      e.target.value,
                                     )
                                   }
                                   className={`input-primary w-full text-lg font-bold border border-black ${
@@ -3185,7 +3186,7 @@ export function Dashboard() {
                                   onChange={(e) =>
                                     atualizarEstoqueMinimoEstoque(
                                       item.produtoId,
-                                      e.target.value
+                                      e.target.value,
                                     )
                                   }
                                   className="input-primary w-full border border-black"
