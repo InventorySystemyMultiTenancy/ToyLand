@@ -174,16 +174,7 @@ export function Produtos() {
         );
       },
     },
-    {
-      key: "estoque",
-      label: "Estoque",
-      render: (produto) => {
-        const estoque = produto.estoqueAtual || 0;
-        const cor =
-          estoque < 10 ? "error" : estoque < 30 ? "warning" : "success";
-        return <Badge type={cor}>{estoque}</Badge>;
-      },
-    },
+    // ...estoque column removida...
     {
       key: "ativo",
       label: "Status",
