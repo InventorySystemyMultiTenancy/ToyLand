@@ -75,29 +75,31 @@ export function Movimentacoes() {
   const [estoqueAnterior, setEstoqueAnterior] = useState(0);
 
   // --- EFEITOS ---
+  // --- FUNÇÃO DE CARREGAMENTO GLOBAL ---
+  const carregarDados = async () => {
+    setLoading(true);
+    try {
+      const [movRes, maqRes, prodRes, lojasRes] = await Promise.all([
+        api.get("/movimentacoes"),
+        api.get("/maquinas"),
+        api.get("/produtos"),
+        api.get("/lojas"),
+      ]);
+      setMovimentacoes(movRes.data);
+      setMaquinas(maqRes.data);
+      setProdutos(prodRes.data);
+      setLojas(lojasRes.data);
+    } catch (error) {
+      setError(
+        "Erro ao carregar dados: " +
+          (error.response?.data?.error || error.message),
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const carregarDados = async () => {
-      setLoading(true);
-      try {
-        const [movRes, maqRes, prodRes, lojasRes] = await Promise.all([
-          api.get("/movimentacoes"),
-          api.get("/maquinas"),
-          api.get("/produtos"),
-          api.get("/lojas"),
-        ]);
-        setMovimentacoes(movRes.data);
-        setMaquinas(maqRes.data);
-        setProdutos(prodRes.data);
-        setLojas(lojasRes.data);
-      } catch (error) {
-        setError(
-          "Erro ao carregar dados: " +
-            (error.response?.data?.error || error.message),
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
     carregarDados();
     carregarMovimentacoesEstoqueLoja();
   }, []);
