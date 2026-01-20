@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import api from "../services/api";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
@@ -28,10 +28,14 @@ export function Graficos() {
   const [erro, setErro] = useState("");
 
   // Calcula o lucro total somando lucro, dinheiro e pix (após dadosDashboard existir)
-  const lucroTotal =
-    (dadosDashboard?.totais?.lucro || 0) +
-    (dadosDashboard?.totais?.dinheiro || 0) +
-    (dadosDashboard?.totais?.pix || 0);
+  const lucroTotal = useMemo(() => {
+    if (!dadosDashboard?.totais) return 0;
+    return (
+      (dadosDashboard.totais.lucro || 0) +
+      (dadosDashboard.totais.dinheiro || 0) +
+      (dadosDashboard.totais.pix || 0)
+    );
+  }, [dadosDashboard]);
 
   // Configuração inicial de datas (últimos 30 dias)
   useEffect(() => {
@@ -244,10 +248,12 @@ export function Graficos() {
                 </div>
                 <div className="mt-3 flex items-center">
                   <span className="text-sm font-semibold text-green-600">
-                    {calcularMargem(
-                      lucroTotal,
-                      dadosDashboard?.totais?.faturamento || 0,
-                    )}
+                    {dadosDashboard?.totais?.faturamento
+                      ? calcularMargem(
+                          lucroTotal,
+                          dadosDashboard.totais.faturamento,
+                        )
+                      : "0.0"}
                     %
                   </span>
                   <span className="text-xs text-gray-500 ml-1">Margem</span>
@@ -288,11 +294,12 @@ export function Graficos() {
                 </div>
                 <div className="mt-3 text-xs text-gray-500">
                   Média:{" "}
-                  {(dadosDashboard.totais.saidas > 0
-                    ? dadosDashboard.totais.fichas /
-                      dadosDashboard.totais.saidas
-                    : 0
-                  ).toFixed(1)}{" "}
+                  {dadosDashboard?.totais?.saidas > 0
+                    ? (
+                        dadosDashboard.totais.fichas /
+                        dadosDashboard.totais.saidas
+                      ).toFixed(1)
+                    : "0.0"}{" "}
                   fichas/prêmio
                 </div>
               </div>
