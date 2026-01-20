@@ -19,11 +19,6 @@ import {
 } from "recharts";
 
 export function Graficos() {
-  // Calcula o lucro total somando lucro, dinheiro e pix
-  const lucroTotal =
-    (dadosDashboard?.totais?.lucro || 0) +
-    (dadosDashboard?.totais?.dinheiro || 0) +
-    (dadosDashboard?.totais?.pix || 0);
   const [loading, setLoading] = useState(true);
   const [lojas, setLojas] = useState([]);
   const [lojaSelecionada, setLojaSelecionada] = useState("");
@@ -31,6 +26,12 @@ export function Graficos() {
   const [dataFim, setDataFim] = useState("");
   const [dadosDashboard, setDadosDashboard] = useState(null);
   const [erro, setErro] = useState("");
+
+  // Calcula o lucro total somando lucro, dinheiro e pix (após dadosDashboard existir)
+  const lucroTotal =
+    (dadosDashboard?.totais?.lucro || 0) +
+    (dadosDashboard?.totais?.dinheiro || 0) +
+    (dadosDashboard?.totais?.pix || 0);
 
   // Configuração inicial de datas (últimos 30 dias)
   useEffect(() => {
