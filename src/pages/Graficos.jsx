@@ -19,6 +19,11 @@ import {
 } from "recharts";
 
 export function Graficos() {
+  // Calcula o lucro total somando lucro, dinheiro e pix
+  const lucroTotal =
+    (dadosDashboard?.totais?.lucro || 0) +
+    (dadosDashboard?.totais?.dinheiro || 0) +
+    (dadosDashboard?.totais?.pix || 0);
   const [loading, setLoading] = useState(true);
   const [lojas, setLojas] = useState([]);
   const [lojaSelecionada, setLojaSelecionada] = useState("");
@@ -195,7 +200,7 @@ export function Graficos() {
                       Dinheiro
                     </p>
                     <h3 className="text-2xl font-bold text-gray-900 mt-1">
-                      {formatMoney(dadosDashboard.totais.dinheiro)}
+                      {formatMoney(dadosDashboard?.totais?.dinheiro || 0)}
                     </h3>
                   </div>
                   <span className="p-2 bg-yellow-100 text-yellow-600 rounded-lg text-xl">
@@ -212,7 +217,7 @@ export function Graficos() {
                       Pix
                     </p>
                     <h3 className="text-2xl font-bold text-gray-900 mt-1">
-                      {formatMoney(dadosDashboard.totais.pix)}
+                      {formatMoney(dadosDashboard?.totais?.pix || 0)}
                     </h3>
                   </div>
                   <span className="p-2 bg-cyan-100 text-cyan-600 rounded-lg text-xl">
@@ -229,7 +234,7 @@ export function Graficos() {
                       Lucro Estimado
                     </p>
                     <h3 className="text-2xl font-bold text-gray-900 mt-1">
-                      {formatMoney(dadosDashboard.totais.lucro)}
+                      {formatMoney(lucroTotal)}
                     </h3>
                   </div>
                   <span className="p-2 bg-blue-100 text-blue-600 rounded-lg text-xl">
@@ -239,8 +244,8 @@ export function Graficos() {
                 <div className="mt-3 flex items-center">
                   <span className="text-sm font-semibold text-green-600">
                     {calcularMargem(
-                      dadosDashboard.totais.lucro,
-                      dadosDashboard.totais.faturamento,
+                      lucroTotal,
+                      dadosDashboard?.totais?.faturamento || 0,
                     )}
                     %
                   </span>

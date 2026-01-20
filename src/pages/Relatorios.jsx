@@ -210,7 +210,7 @@ export function Relatorios() {
                 <span className="text-2xl sm:text-3xl">📊</span>
                 Resumo Geral da Loja
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3 sm:gap-4">
                 <div className="card bg-gradient-to-br from-blue-500 to-blue-600 text-white">
                   <div className="text-2xl sm:text-3xl mb-2">🎫</div>
                   <div className="text-xl sm:text-2xl font-bold">
@@ -219,11 +219,35 @@ export function Relatorios() {
                   <div className="text-sm opacity-90">Total de Fichas</div>
                 </div>
 
+                <div className="card bg-gradient-to-br from-yellow-400 to-yellow-600 text-white">
+                  <div className="text-2xl sm:text-3xl mb-2">💵</div>
+                  <div className="text-xl sm:text-2xl font-bold">
+                    R${" "}
+                    {Number(relatorio.totais?.dinheiro || 0).toLocaleString(
+                      "pt-BR",
+                      { minimumFractionDigits: 2 },
+                    )}
+                  </div>
+                  <div className="text-xs sm:text-sm opacity-90">Dinheiro</div>
+                </div>
+
+                <div className="card bg-gradient-to-br from-cyan-400 to-cyan-600 text-white">
+                  <div className="text-2xl sm:text-3xl mb-2">🟢</div>
+                  <div className="text-xl sm:text-2xl font-bold">
+                    R${" "}
+                    {Number(relatorio.totais?.pix || 0).toLocaleString(
+                      "pt-BR",
+                      { minimumFractionDigits: 2 },
+                    )}
+                  </div>
+                  <div className="text-xs sm:text-sm opacity-90">Pix</div>
+                </div>
+
                 <div className="card bg-gradient-to-br from-red-500 to-red-600 text-white">
                   <div className="text-2xl sm:text-3xl mb-2">📤</div>
                   <div className="text-xl sm:text-2xl font-bold">
                     {(relatorio.totais?.produtosSairam || 0).toLocaleString(
-                      "pt-BR"
+                      "pt-BR",
                     )}
                   </div>
                   <div className="text-xs sm:text-sm opacity-90">
@@ -235,7 +259,7 @@ export function Relatorios() {
                   <div className="text-2xl sm:text-3xl mb-2">📥</div>
                   <div className="text-xl sm:text-2xl font-bold">
                     {(relatorio.totais?.produtosEntraram || 0).toLocaleString(
-                      "pt-BR"
+                      "pt-BR",
                     )}
                   </div>
                   <div className="text-xs sm:text-sm opacity-90">
@@ -247,7 +271,7 @@ export function Relatorios() {
                   <div className="text-2xl sm:text-3xl mb-2">🔄</div>
                   <div className="text-xl sm:text-2xl font-bold">
                     {(relatorio.totais?.movimentacoes || 0).toLocaleString(
-                      "pt-BR"
+                      "pt-BR",
                     )}
                   </div>
                   <div className="text-xs sm:text-sm opacity-90">
@@ -263,7 +287,13 @@ export function Relatorios() {
                       const totalFichas = relatorio.totais?.fichas || 0;
                       const valorFicha =
                         relatorio.loja?.valorFichaPadrao || 2.5;
-                      return (totalFichas * valorFicha).toFixed(2);
+                      const dinheiro = Number(relatorio.totais?.dinheiro || 0);
+                      const pix = Number(relatorio.totais?.pix || 0);
+                      return (
+                        totalFichas * valorFicha +
+                        dinheiro +
+                        pix
+                      ).toFixed(2);
                     })()}
                   </div>
                   <div className="text-xs sm:text-sm opacity-90">
@@ -347,7 +377,7 @@ export function Relatorios() {
                           </div>
                           <div className="text-xl sm:text-3xl font-bold text-center">
                             {maquina.totais.produtosSairam.toLocaleString(
-                              "pt-BR"
+                              "pt-BR",
                             )}
                           </div>
                           <div className="text-xs sm:text-sm text-center mt-1 sm:mt-2 opacity-90">
@@ -360,7 +390,7 @@ export function Relatorios() {
                           </div>
                           <div className="text-xl sm:text-3xl font-bold text-center">
                             {maquina.totais.produtosEntraram.toLocaleString(
-                              "pt-BR"
+                              "pt-BR",
                             )}
                           </div>
                           <div className="text-xs sm:text-sm text-center mt-1 sm:mt-2 opacity-90">
@@ -440,7 +470,7 @@ export function Relatorios() {
                                     </div>
                                     <div className="bg-red-500 text-white px-3 sm:px-5 py-2 sm:py-3 rounded-xl font-bold text-base sm:text-xl shrink-0">
                                       {produto.quantidade.toLocaleString(
-                                        "pt-BR"
+                                        "pt-BR",
                                       )}
                                     </div>
                                   </div>
@@ -497,7 +527,7 @@ export function Relatorios() {
                                     </div>
                                     <div className="bg-green-500 text-white px-3 sm:px-5 py-2 sm:py-3 rounded-xl font-bold text-base sm:text-xl shrink-0">
                                       {produto.quantidade.toLocaleString(
-                                        "pt-BR"
+                                        "pt-BR",
                                       )}
                                     </div>
                                   </div>
