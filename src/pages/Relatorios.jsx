@@ -62,7 +62,8 @@ export function Relatorios() {
       setError("");
       setRelatorio(null); // Limpar relatório anterior
 
-      const response = await api.get("/relatorios/impressao", {
+      // Usar a mesma rota do dashboard para garantir os mesmos campos (dinheiro, pix, etc)
+      const response = await api.get("/relatorios/dashboard", {
         params: {
           lojaId: lojaSelecionada,
           dataInicio,
