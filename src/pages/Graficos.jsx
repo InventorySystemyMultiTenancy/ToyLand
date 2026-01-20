@@ -169,7 +169,7 @@ export function Graficos() {
         {dadosDashboard && (
           <div className="space-y-8 animate-fade-in">
             {/* 1. KPI Cards - Indicadores Principais */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
               {/* Faturamento */}
               <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
                 <div className="flex justify-between items-start">
@@ -183,6 +183,40 @@ export function Graficos() {
                   </div>
                   <span className="p-2 bg-green-100 text-green-600 rounded-lg text-xl">
                     💰
+                  </span>
+                </div>
+              </div>
+
+              {/* Dinheiro */}
+              <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                      Dinheiro
+                    </p>
+                    <h3 className="text-2xl font-bold text-gray-900 mt-1">
+                      {formatMoney(dadosDashboard.totais.dinheiro)}
+                    </h3>
+                  </div>
+                  <span className="p-2 bg-yellow-100 text-yellow-600 rounded-lg text-xl">
+                    💵
+                  </span>
+                </div>
+              </div>
+
+              {/* Pix */}
+              <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-cyan-500">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                      Pix
+                    </p>
+                    <h3 className="text-2xl font-bold text-gray-900 mt-1">
+                      {formatMoney(dadosDashboard.totais.pix)}
+                    </h3>
+                  </div>
+                  <span className="p-2 bg-cyan-100 text-cyan-600 rounded-lg text-xl">
+                    🟢
                   </span>
                 </div>
               </div>
@@ -206,7 +240,7 @@ export function Graficos() {
                   <span className="text-sm font-semibold text-green-600">
                     {calcularMargem(
                       dadosDashboard.totais.lucro,
-                      dadosDashboard.totais.faturamento
+                      dadosDashboard.totais.faturamento,
                     )}
                     %
                   </span>
@@ -249,7 +283,8 @@ export function Graficos() {
                 <div className="mt-3 text-xs text-gray-500">
                   Média:{" "}
                   {(dadosDashboard.totais.saidas > 0
-                    ? dadosDashboard.totais.fichas / dadosDashboard.totais.saidas
+                    ? dadosDashboard.totais.fichas /
+                      dadosDashboard.totais.saidas
                     : 0
                   ).toFixed(1)}{" "}
                   fichas/prêmio
@@ -414,7 +449,7 @@ export function Graficos() {
                                       (dadosDashboard.rankingProdutos[0]
                                         .quantidade || 1)) *
                                       100,
-                                    100
+                                    100,
                                   )}%`,
                                 }}
                               ></div>
@@ -440,7 +475,11 @@ export function Graficos() {
                       margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                      <XAxis dataKey="nome" tick={{ fontSize: 10 }} interval={0} />
+                      <XAxis
+                        dataKey="nome"
+                        tick={{ fontSize: 10 }}
+                        interval={0}
+                      />
                       <YAxis domain={[0, 100]} />
                       <Tooltip formatter={(val) => `${val}%`} />
                       <Bar
@@ -456,11 +495,11 @@ export function Graficos() {
                                 entry.ocupacao < 30
                                   ? "#EF4444" // Crítico
                                   : entry.ocupacao < 60
-                                  ? "#F59E0B" // Atenção
-                                  : "#10B981" // Bom
+                                    ? "#F59E0B" // Atenção
+                                    : "#10B981" // Bom
                               }
                             />
-                          )
+                          ),
                         )}
                       </Bar>
                     </BarChart>
