@@ -43,8 +43,8 @@ export function Navbar() {
             </Link>
 
             {/* Menu Desktop */}
-            <div className="hidden lg:block ml-16">
-              <div className="flex items-center space-x-8">
+            <div className="hidden lg:block ml-8">
+              <div className="flex items-center space-x-4">
                 <Link
                   to="/"
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
