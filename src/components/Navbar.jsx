@@ -37,9 +37,6 @@ export function Navbar() {
                   e.target.style.display = "none";
                 }}
               />
-              <span className="hidden sm:block text-xl sm:text-2xl lg:text-3xl font-bold bg-linear-to-r from-primary via-accent-yellow to-primary bg-clip-text text-transparent">
-                ToyLand
-              </span>
             </Link>
 
             {/* Menu Desktop */}
