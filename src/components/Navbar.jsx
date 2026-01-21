@@ -31,7 +31,8 @@ export function Navbar() {
               <img
                 src="/ToyLandLogo.png"
                 alt="ToyLand Logo"
-                className="w-14 h-14 sm:w-12 sm:h-12 lg:w-14 lg:h-14 object-contain transition-transform duration-300 group-hover:scale-110"
+                className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 object-contain transition-transform duration-300 group-hover:scale-110"
+                style={{ maxHeight: "6rem", maxWidth: "8rem" }}
                 onError={(e) => {
                   e.target.style.display = "none";
                 }}
