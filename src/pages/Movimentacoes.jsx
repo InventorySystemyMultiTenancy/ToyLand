@@ -150,14 +150,13 @@ export function Movimentacoes() {
     if (name === "quantidadeAtualMaquina") {
       setQuantidadeAtualEditada(true);
     }
-    // Se mudou IN ou OUT, e máquina selecionada, calcula quantidadeAtualMaquina só se não foi editado manualmente
+    // Se mudou OUT, e máquina selecionada, calcula quantidadeAtualMaquina só se não foi editado manualmente
     if (
-      (name === "contadorIn" || name === "contadorOut") &&
+      name === "contadorOut" &&
       newForm.maquina_id &&
       !newForm.ignoreInOut &&
       !quantidadeAtualEditada
     ) {
-      const maquina = maquinas.find((m) => m.id === newForm.maquina_id);
       const movs = movimentacoes
         .filter(
           (m) =>
@@ -166,11 +165,10 @@ export function Movimentacoes() {
         )
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       let ultimoTotalPos = movs.length > 0 ? movs[0].totalPos || 0 : 0;
-      const inAtual =
-        parseInt(name === "contadorIn" ? value : newForm.contadorIn) || 0;
-      const outAtual =
-        parseInt(name === "contadorOut" ? value : newForm.contadorOut) || 0;
-      let quantidadeAtual = ultimoTotalPos + (inAtual - outAtual);
+      let ultimoOut = movs.length > 0 ? movs[0].contadorOut || 0 : 0;
+      const outAtual = parseInt(value) || 0;
+      // Quantidade atual = totalPos anterior - (OUT atual - OUT anterior)
+      let quantidadeAtual = ultimoTotalPos - (outAtual - ultimoOut);
       if (quantidadeAtual < 0) quantidadeAtual = 0;
       newForm.quantidadeAtualMaquina = quantidadeAtual;
     }
@@ -809,7 +807,7 @@ export function Movimentacoes() {
                   <p className="text-xs text-gray-500 mt-1">
                     Quantos produtos foram adicionados
                   </p>
-                  {/* Sugestão automática de abastecimento */}
+                  {/* Sugestão automática de abastecimento: capacidade - quantidade atual */}
                   {formData.maquina_id &&
                     maquinas.length > 0 &&
                     (() => {
