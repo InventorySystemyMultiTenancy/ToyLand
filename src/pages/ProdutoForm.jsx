@@ -339,37 +339,37 @@ export function ProdutoForm() {
                     neste produto
                   </p>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Ficha R$ 2,50 */}
-                    <div className="bg-white p-4 rounded-lg border border-green-300">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* Ficha R$ 3,00 */}
+                    <div className="bg-white p-4 rounded-lg border border-purple-300">
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-semibold text-gray-700">
-                          💰 Ficha R$ 2,50
+                          🎯 Ficha R$ 3,00
                         </span>
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-bold">
-                          Econômica
+                        <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full font-bold">
+                          Popular
                         </span>
                       </div>
                       <div className="text-center">
-                        <p className="text-3xl font-bold text-green-600">
-                          {Math.ceil(parseFloat(formData.preco) / 2.5)}
+                        <p className="text-3xl font-bold text-purple-600">
+                          {Math.ceil(parseFloat(formData.preco) / 3)}
                         </p>
                         <p className="text-xs text-gray-600 mt-1">
-                          {Math.ceil(parseFloat(formData.preco) / 2.5) === 1
+                          {Math.ceil(parseFloat(formData.preco) / 3) === 1
                             ? "jogada mínima"
                             : "jogadas mínimas"}
                         </p>
                         <p className="text-xs text-gray-500 mt-2">
                           Faturamento: R${" "}
                           {(
-                            Math.ceil(parseFloat(formData.preco) / 2.5) * 2.5
+                            Math.ceil(parseFloat(formData.preco) / 3) * 3
                           ).toFixed(2)}
                         </p>
                       </div>
                     </div>
 
                     {/* Ficha R$ 5,00 */}
-                    <div className="bg-white p-4 rounded-lg border border-green-300">
+                    <div className="bg-white p-4 rounded-lg border border-blue-300">
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-semibold text-gray-700">
                           💎 Ficha R$ 5,00
@@ -395,6 +395,62 @@ export function ProdutoForm() {
                         </p>
                       </div>
                     </div>
+
+                    {/* Ficha R$ 7,00 */}
+                    <div className="bg-white p-4 rounded-lg border border-yellow-300">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-semibold text-gray-700">
+                          ⭐ Ficha R$ 7,00
+                        </span>
+                        <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full font-bold">
+                          Avançada
+                        </span>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-3xl font-bold text-yellow-600">
+                          {Math.ceil(parseFloat(formData.preco) / 7)}
+                        </p>
+                        <p className="text-xs text-gray-600 mt-1">
+                          {Math.ceil(parseFloat(formData.preco) / 7) === 1
+                            ? "jogada mínima"
+                            : "jogadas mínimas"}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-2">
+                          Faturamento: R${" "}
+                          {(
+                            Math.ceil(parseFloat(formData.preco) / 7) * 7
+                          ).toFixed(2)}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Ficha R$ 10,00 */}
+                    <div className="bg-white p-4 rounded-lg border border-pink-300">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-semibold text-gray-700">
+                          💸 Ficha R$ 10,00
+                        </span>
+                        <span className="text-xs bg-pink-100 text-pink-800 px-2 py-1 rounded-full font-bold">
+                          VIP
+                        </span>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-3xl font-bold text-pink-600">
+                          {Math.ceil(parseFloat(formData.preco) / 10)}
+                        </p>
+                        <p className="text-xs text-gray-600 mt-1">
+                          {Math.ceil(parseFloat(formData.preco) / 10) === 1
+                            ? "jogada mínima"
+                            : "jogadas mínimas"}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-2">
+                          Faturamento: R${" "}
+                          {(
+                            Math.ceil(parseFloat(formData.preco) / 10) * 10
+                          ).toFixed(2)}
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
@@ -402,8 +458,8 @@ export function ProdutoForm() {
                       <span>💡</span>
                       <span>
                         <strong>Dica:</strong> Quanto menor o número de jogadas,
-                        mais rápido você recupera o investimento. Com ficha de
-                        R$ 5,00, o lucro é mais rápido!
+                        mais rápido você recupera o investimento. Com fichas
+                        maiores, o lucro é mais rápido!
                       </span>
                     </p>
                   </div>

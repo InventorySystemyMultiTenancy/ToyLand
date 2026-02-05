@@ -143,14 +143,14 @@ export function Produtos() {
       ),
     },
     {
-      key: "jogadas_2_50",
-      label: "💰 Jogadas R$ 2,50",
+      key: "jogadas_3_00",
+      label: "🎯 Jogadas R$ 3,00",
       render: (produto) => {
         const preco = Number(produto.preco || 0);
-        const jogadas = Math.ceil(preco / 2.5);
+        const jogadas = Math.ceil(preco / 3);
         return (
           <div className="text-center">
-            <span className="font-bold text-green-600 text-lg">{jogadas}</span>
+            <span className="font-bold text-purple-600 text-lg">{jogadas}</span>
             <span className="text-xs text-gray-500 block">
               {jogadas === 1 ? "jogada" : "jogadas"}
             </span>
@@ -167,6 +167,38 @@ export function Produtos() {
         return (
           <div className="text-center">
             <span className="font-bold text-blue-600 text-lg">{jogadas}</span>
+            <span className="text-xs text-gray-500 block">
+              {jogadas === 1 ? "jogada" : "jogadas"}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      key: "jogadas_7_00",
+      label: "⭐ Jogadas R$ 7,00",
+      render: (produto) => {
+        const preco = Number(produto.preco || 0);
+        const jogadas = Math.ceil(preco / 7);
+        return (
+          <div className="text-center">
+            <span className="font-bold text-yellow-600 text-lg">{jogadas}</span>
+            <span className="text-xs text-gray-500 block">
+              {jogadas === 1 ? "jogada" : "jogadas"}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      key: "jogadas_10_00",
+      label: "💸 Jogadas R$ 10,00",
+      render: (produto) => {
+        const preco = Number(produto.preco || 0);
+        const jogadas = Math.ceil(preco / 10);
+        return (
+          <div className="text-center">
+            <span className="font-bold text-pink-600 text-lg">{jogadas}</span>
             <span className="text-xs text-gray-500 block">
               {jogadas === 1 ? "jogada" : "jogadas"}
             </span>
