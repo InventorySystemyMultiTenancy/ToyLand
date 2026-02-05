@@ -35,13 +35,12 @@ export function Login() {
       <div className="relative card-gradient max-w-md w-full backdrop-blur-sm">
         {/* Logo/Header Section */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary to-accent-yellow rounded-full shadow-2xl mb-4 transform hover:rotate-12 transition-transform duration-300">
             <img
               src="/ToyLandLogo.png"
               alt="ToyLand Logo"
-              className="w-16 h-16 object-contain"
+              className="w-30 h-25 object-contain rounded-full justify-center mx-auto mb-4"
             />
-          </div>
+
           <h1 className="text-4xl font-bold mb-2">
             <span className="text-gradient">ToyLand</span>
           </h1>

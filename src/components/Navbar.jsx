@@ -1,4 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import ToyLandLogo from "../assets/ToyLandLogoSemFundo.png";
 import { useAuth } from "../contexts/AuthContext";
 import { useState } from "react";
 
@@ -20,7 +21,13 @@ export function Navbar() {
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
-    <nav className="bg-gradient-to-r from-black via-gray-800 to-gray-900 text-white shadow-2xl border-b-4 border-primary">
+    <nav
+      className="text-white shadow-2xl border-b-4 border-primary"
+      style={{
+        background:
+          "linear-gradient(90deg, #63038C 0%, #460273 50%, #420062 100%)",
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
@@ -29,7 +36,7 @@ export function Navbar() {
               className="flex items-center space-x-2 sm:space-x-3 group"
             >
               <img
-                src="/ToyLandLogo.png"
+                src={ToyLandLogo}
                 alt="ToyLand Logo"
                 className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 object-contain transition-transform duration-300 group-hover:scale-110 rounded-2xl"
                 style={{ maxHeight: "6rem", maxWidth: "8rem" }}
