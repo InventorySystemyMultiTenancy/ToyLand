@@ -191,6 +191,7 @@ export function Movimentacoes() {
       const totalPre = parseInt(formData.quantidadeAtualMaquina) || 0; // valor digitado pelo usuário
       const quantidadeAdicionada = parseInt(formData.quantidadeAdicionada) || 0;
       const fichas = parseInt(formData.fichas) || 0;
+      const retiradaProduto = parseInt(formData.retiradaProduto) || 0;
 
       // totalPos = totalPre + abastecidas
       const totalPos = totalPre + quantidadeAdicionada;
@@ -257,6 +258,8 @@ export function Movimentacoes() {
             produtoId: formData.produto_id,
             quantidadeSaiu: quantidadeSaiu,
             quantidadeAbastecida: quantidadeAdicionada,
+            retiradaProduto: retiradaProduto,
+            retiradaProdutoDevolverEstoque: retiradaProduto > 0, // true se houver retirada
           },
         ],
       };
@@ -296,6 +299,7 @@ export function Movimentacoes() {
         observacao: "",
         retiradaEstoque: false,
         ignoreInOut: false,
+        retiradaProduto: "",
       });
       setEstoqueAnterior(0);
       setFiltroLojaForm("");
@@ -799,7 +803,6 @@ export function Movimentacoes() {
               </div>
               {/* Contadores da Máquina */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     📥 Contador IN (Entrada)
@@ -929,87 +932,25 @@ export function Movimentacoes() {
                       </p>
                     )}
                 </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    🎫 Quantidade de Fichas
-                  </label>
-                  <input
-                    type="number"
-                    name="fichas"
-                    value={formData.fichas}
-                    onChange={handleChange}
-                    className="input-field"
-                    placeholder="0"
-                    min="0"
-                    disabled={formData.retiradaEstoque}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Fichas coletadas da máquina
-                  </p>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    💵 Valor em Notas (R$)
-                  </label>
-                  <input
-                    type="number"
-                    name="quantidade_notas_entrada"
-                    value={formData.quantidade_notas_entrada}
-                    onChange={handleChange}
-                    className="input-field"
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Valor total em dinheiro (notas) inserido na máquina
-                  </p>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    💳 Valor Digital (Pix/Maquininha) (R$)
-                  </label>
-                  <input
-                    type="number"
-                    name="valor_entrada_maquininha_pix"
-                    value={formData.valor_entrada_maquininha_pix}
-                    onChange={handleChange}
-                    className="input-field"
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Valor total recebido via pagamento digital (Pix/Maquininha)
-                  </p>
-                </div>
               </div>
-
-              {/* Checkbox de Retirada de Estoque */}
-              <div className="p-4 bg-linear-to-r from-orange-50 to-yellow-50 border-2 border-orange-200 rounded-lg">
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="retiradaEstoque"
-                    checked={formData.retiradaEstoque}
-                    onChange={handleChange}
-                    className="w-5 h-5 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 focus:ring-2 cursor-pointer"
-                  />
-                  <div className="flex-1">
-                    <span className="text-sm font-bold text-orange-900">
-                      📦 Retirada de Estoque (não conta como dinheiro)
-                    </span>
-                    <p className="text-xs text-orange-700 mt-1">
-                      Marque esta opção quando estiver retirando produtos da
-                      máquina sem que seja uma venda (exemplo: produtos
-                      danificados, devolução, transferência). As fichas serão
-                      automaticamente zeradas.
-                    </p>
-                  </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  ❌ Retirada de Produto
                 </label>
+                <input
+                  type="number"
+                  name="retiradaProduto"
+                  value={formData.retiradaProduto}
+                  onChange={handleChange}
+                  className="input-field"
+                  placeholder="0"
+                  min="0"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Quantidade de produtos retirados (não conta como saída
+                  financeira)
+                </p>
               </div>
-
               <div className="flex gap-4 justify-end pt-4 border-t border-gray-200">
                 {error && (
                   <AlertBox
