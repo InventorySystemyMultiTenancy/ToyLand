@@ -49,7 +49,7 @@ export function Maquinas() {
     } catch (error) {
       setError(
         "Erro ao carregar dados: " +
-          (error.response?.data?.error || error.message)
+          (error.response?.data?.error || error.message),
       );
     } finally {
       setLoading(false);
@@ -65,7 +65,7 @@ export function Maquinas() {
         setSuccess("✅ Máquina excluída permanentemente com sucesso!");
       } else {
         setSuccess(
-          "⚠️ Máquina desativada! Clique novamente em excluir para deletar permanentemente."
+          "⚠️ Máquina desativada! Clique novamente em excluir para deletar permanentemente.",
         );
       }
 
@@ -75,7 +75,7 @@ export function Maquinas() {
     } catch (error) {
       setError(
         "Erro ao excluir máquina: " +
-          (error.response?.data?.error || error.message)
+          (error.response?.data?.error || error.message),
       );
       setDeleteId(null);
       setMaquinaParaDeletar(null);
@@ -177,13 +177,15 @@ export function Maquinas() {
       label: "Ações",
       render: (maquina) => (
         <div className="flex gap-2">
-          <button
-            onClick={() => navigate(`/maquinas/${maquina.id}/editar`)}
-            className="text-blue-600 hover:text-blue-800 font-semibold"
-            title="Editar"
-          >
-            ✏️
-          </button>
+          {usuario?.role === "ADMIN" && (
+            <button
+              onClick={() => navigate(`/maquinas/${maquina.id}/editar`)}
+              className="text-blue-600 hover:text-blue-800 font-semibold"
+              title="Editar"
+            >
+              ✏️
+            </button>
+          )}
           <button
             onClick={() => handleAbrirDialogDeletar(maquina)}
             className={`font-semibold ${

@@ -54,7 +54,7 @@ export function UsuarioForm() {
         lojasPermitidas: usuario.permissoesLojas?.map((p) => p.lojaId) || [],
       });
     } catch (error) {
-      setError("Erro ao carregar usuário");
+      setError("Erro ao carregar usuário", error);
     } finally {
       setLoading(false);
     }
