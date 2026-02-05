@@ -1264,8 +1264,8 @@ export function Dashboard() {
           </button>
         </div>
 
-        {/* Cards de Resumo com design moderno - Apenas para ADMIN e CONFIGURADOR_MAQUINA */}
-        {["ADMIN", "CONFIGURADOR_MAQUINA"].includes(usuario?.role) && (
+        {/* Cards de Resumo com design moderno - Apenas para ADMIN */}
+        {usuario?.role === "ADMIN" && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
             <div className="stat-card bg-linear-to-br from-yellow-500 to-orange-500 p-4 sm:p-6 rounded-xl shadow-md flex flex-col justify-between min-h-30">
               <div className="relative z-10">
