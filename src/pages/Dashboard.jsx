@@ -203,12 +203,14 @@ export function Dashboard() {
                     onClick={() => handleRemoveProduto(idx)}
                   >
                     Remover
-                  </button>
-                )}
-              </div>
-            ))}
-            <button
-              type="button"
+                    {usuario?.role === "ADMIN" && (
+                      <button
+                        className="px-4 py-2 bg-primary text-black rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm flex items-center gap-2"
+                        onClick={() => handleEditarMaquina(maquina)}
+                      >
+                        ✏️ Editar Estoque
+                      </button>
+                    )}
               className="btn-secondary"
               onClick={handleAddProduto}
             >
