@@ -8,7 +8,6 @@ import { PageLoader } from "../components/Loading";
 import { Badge } from "../components/UIComponents";
 import AlertAdmin from "../components/AlertAdmin";
 import { useAuth } from "../contexts/AuthContext";
-
 import Swal from "sweetalert2";
 
 export function Dashboard() {
@@ -88,6 +87,7 @@ export function Dashboard() {
       const payload = {
         lojaId: movimentacaoLojaId,
         usuarioId: usuario?.id,
+        empresaId: usuario?.empresaId,
         produtos: produtosValidos.map((p) => ({
           produtoId: p.produtoId,
           quantidade: parseInt(p.quantidade),
