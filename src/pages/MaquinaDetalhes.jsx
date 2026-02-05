@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../contexts/AuthContext";
 import { useParams, useLocation } from "react-router-dom";
 import api from "../services/api";
 import { Navbar } from "../components/Navbar";
@@ -7,6 +8,7 @@ import { PageHeader, Badge, AlertBox } from "../components/UIComponents";
 import { PageLoader } from "../components/Loading";
 
 export function MaquinaDetalhes() {
+  const { usuario } = useAuth();
   const { id } = useParams();
   const location = useLocation();
   const [maquina, setMaquina] = useState(null);
@@ -47,7 +49,7 @@ export function MaquinaDetalhes() {
         api.get(`/maquinas/${id}`),
         api.get(`/movimentacoes?maquinaId=${id}`),
         api.get(
-          `/relatorios/alertas-movimentacao-inconsistente?maquinaId=${id}`
+          `/relatorios/alertas-movimentacao-inconsistente?maquinaId=${id}`,
         ),
         api.get(`/relatorios/alertas-abastecimento-incompleto?maquinaId=${id}`),
       ]);
@@ -58,7 +60,7 @@ export function MaquinaDetalhes() {
     } catch (error) {
       setError(
         "Erro ao carregar dados: " +
-          (error.response?.data?.error || error.message)
+          (error.response?.data?.error || error.message),
       );
     } finally {
       setLoading(false);
@@ -93,7 +95,7 @@ export function MaquinaDetalhes() {
               try {
                 await api.delete(
                   `/relatorios/alertas-movimentacao-inconsistente/${maquina.alertaId}`,
-                  { data: { maquinaId: maquina.id } }
+                  { data: { maquinaId: maquina.id } },
                 );
                 window.location.assign("/alertas");
               } catch (error) {
@@ -154,19 +156,24 @@ export function MaquinaDetalhes() {
               </p>
             </div>
             <div>
-              <p>
-                <strong>Força Fraca:</strong> {maquina.forcaFraca ?? "-"}%
-              </p>
-              <p>
-                <strong>Força Forte:</strong> {maquina.forcaForte ?? "-"}%
-              </p>
-              <p>
-                <strong>Força Premium:</strong> {maquina.forcaPremium ?? "-"}%
-              </p>
-              <p>
-                <strong>Jogadas Premium:</strong>{" "}
-                {maquina.jogadasPremium ?? "-"}
-              </p>
+              {usuario?.role !== "FUNCIONARIO" && (
+                <>
+                  <p>
+                    <strong>Força Fraca:</strong> {maquina.forcaFraca ?? "-"}%
+                  </p>
+                  <p>
+                    <strong>Força Forte:</strong> {maquina.forcaForte ?? "-"}%
+                  </p>
+                  <p>
+                    <strong>Força Premium:</strong>{" "}
+                    {maquina.forcaPremium ?? "-"}%
+                  </p>
+                  <p>
+                    <strong>Jogadas Premium:</strong>{" "}
+                    {maquina.jogadasPremium ?? "-"}
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -191,7 +198,7 @@ export function MaquinaDetalhes() {
                   <tr key={mov.id} className="border-b">
                     <td>
                       {new Date(mov.dataColeta || mov.createdAt).toLocaleString(
-                        "pt-BR"
+                        "pt-BR",
                       )}
                     </td>
                     <td className="text-green-600">
