@@ -1,4 +1,14 @@
 import { useState, useEffect } from "react";
+import {
+  BarChart,
+  Bar,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 import api from "../services/api";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
@@ -370,7 +380,50 @@ export function Relatorios() {
                           Resumo de Movimentações desta Máquina
                         </span>
                       </h4>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 sm:gap-4">
+                        {/* Dinheiro */}
+                        <div className="bg-gradient-to-br from-yellow-400 to-yellow-600 text-white p-3 sm:p-5 rounded-xl shadow-lg">
+                          <div className="text-2xl sm:text-4xl mb-1 sm:mb-2 text-center">
+                            💵
+                          </div>
+                          <div className="text-xl sm:text-3xl font-bold text-center">
+                            {maquina.totais.dinheiro !== undefined
+                              ? `R$ ${Number(maquina.totais.dinheiro).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`
+                              : "--"}
+                          </div>
+                          <div className="text-xs sm:text-sm text-center mt-1 sm:mt-2 opacity-90">
+                            Dinheiro
+                          </div>
+                        </div>
+                        {/* Pix */}
+                        <div className="bg-gradient-to-br from-cyan-400 to-cyan-600 text-white p-3 sm:p-5 rounded-xl shadow-lg">
+                          <div className="text-2xl sm:text-4xl mb-1 sm:mb-2 text-center">
+                            🟢
+                          </div>
+                          <div className="text-xl sm:text-3xl font-bold text-center">
+                            {maquina.totais.pix !== undefined
+                              ? `R$ ${Number(maquina.totais.pix).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`
+                              : "--"}
+                          </div>
+                          <div className="text-xs sm:text-sm text-center mt-1 sm:mt-2 opacity-90">
+                            Pix
+                          </div>
+                        </div>
+                        {/* Lucro */}
+                        <div className="bg-gradient-to-br from-green-400 to-green-700 text-white p-3 sm:p-5 rounded-xl shadow-lg">
+                          <div className="text-2xl sm:text-4xl mb-1 sm:mb-2 text-center">
+                            💰
+                          </div>
+                          <div className="text-xl sm:text-3xl font-bold text-center">
+                            {maquina.totais.lucro !== undefined
+                              ? `R$ ${Number(maquina.totais.lucro).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`
+                              : "--"}
+                          </div>
+                          <div className="text-xs sm:text-sm text-center mt-1 sm:mt-2 opacity-90">
+                            Lucro
+                          </div>
+                        </div>
+                        {/* Produtos Saíram */}
                         <div className="bg-gradient-to-br from-red-500 to-red-600 text-white p-3 sm:p-5 rounded-xl shadow-lg">
                           <div className="text-2xl sm:text-4xl mb-1 sm:mb-2 text-center">
                             📤
@@ -384,6 +437,7 @@ export function Relatorios() {
                             Produtos Saíram
                           </div>
                         </div>
+                        {/* Produtos Entraram */}
                         <div className="bg-gradient-to-br from-green-500 to-green-600 text-white p-3 sm:p-5 rounded-xl shadow-lg">
                           <div className="text-2xl sm:text-4xl mb-1 sm:mb-2 text-center">
                             📥
@@ -397,6 +451,7 @@ export function Relatorios() {
                             Produtos Entraram
                           </div>
                         </div>
+                        {/* Movimentações */}
                         <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-3 sm:p-5 rounded-xl shadow-lg">
                           <div className="text-2xl sm:text-4xl mb-1 sm:mb-2 text-center">
                             🔄
@@ -538,6 +593,73 @@ export function Relatorios() {
                     )}
                   </div>
                 ))}
+
+                {/* GRÁFICOS DE SAÍDA DE PRODUTOS */}
+                <div className="card bg-gradient-to-r from-blue-50 to-blue-100 border-2 border-blue-300 mt-8">
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <span className="text-2xl">📊</span>
+                    Gráfico de Saída de Produtos por Máquina
+                  </h3>
+                  <div className="h-96 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={relatorio.maquinas?.map((m) => ({
+                          nome: m.maquina.nome,
+                          saidas: m.totais.produtosSairam,
+                        }))}
+                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                          dataKey="nome"
+                          tick={{ fontSize: 12 }}
+                          interval={0}
+                        />
+                        <YAxis allowDecimals={false} />
+                        <Tooltip />
+                        <Legend />
+                        <Bar
+                          dataKey="saidas"
+                          name="Produtos Saíram"
+                          fill="#3B82F6"
+                        />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="card bg-gradient-to-r from-pink-50 to-pink-100 border-2 border-pink-300 mt-8">
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <span className="text-2xl">🏷️</span>
+                    Gráfico de Saída de Produtos por Tipo
+                  </h3>
+                  <div className="h-96 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={relatorio.produtosSairam?.map((p) => ({
+                          nome: p.nome,
+                          quantidade: p.quantidade,
+                        }))}
+                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                          dataKey="nome"
+                          tick={{ fontSize: 12 }}
+                          interval={0}
+                        />
+                        <YAxis allowDecimals={false} />
+                        <Tooltip />
+                        <Legend />
+                        <Bar
+                          dataKey="quantidade"
+                          name="Qtd Saída"
+                          fill="#EF4444"
+                        />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
               </div>
             )}
 
