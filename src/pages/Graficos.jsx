@@ -27,14 +27,39 @@ export function Graficos() {
   const [dadosDashboard, setDadosDashboard] = useState(null);
   const [erro, setErro] = useState("");
 
-  // Calcula o lucro total somando lucro, dinheiro e pix (após dadosDashboard existir)
+  // Calcula o lucro estimado: (dinheiro + pix) - (valor * quantidade de produtos que saíram)
   const lucroTotal = useMemo(() => {
     if (!dadosDashboard?.totais) return 0;
-    return (
-      (dadosDashboard.totais.lucro || 0) +
-      (dadosDashboard.totais.dinheiro || 0) +
-      (dadosDashboard.totais.pix || 0)
-    );
+    const dinheiro = Number(dadosDashboard.totais.dinheiro || 0);
+    const pix = Number(dadosDashboard.totais.pix || 0);
+    // Valor médio dos produtos (se houver ranking)
+    let valorProduto = 0;
+    if (
+      dadosDashboard.rankingProdutos &&
+      dadosDashboard.rankingProdutos.length > 0
+    ) {
+      // Se Produto tem campo valor, usa média ponderada, senão usa 0
+      const produtosComValor = dadosDashboard.rankingProdutos.filter(
+        (p) => p.valor,
+      );
+      if (produtosComValor.length > 0) {
+        const totalValor = produtosComValor.reduce(
+          (sum, p) => sum + p.valor * p.quantidade,
+          0,
+        );
+        const totalQtd = produtosComValor.reduce(
+          (sum, p) => sum + p.quantidade,
+          0,
+        );
+        valorProduto = totalQtd > 0 ? totalValor / totalQtd : 0;
+      }
+    }
+    // Se não veio valor, tenta pegar do backend (lucro/custo unitário)
+    if (!valorProduto && dadosDashboard.totais.valorProduto) {
+      valorProduto = Number(dadosDashboard.totais.valorProduto);
+    }
+    const saidas = Number(dadosDashboard.totais.saidas || 0);
+    return dinheiro + pix - valorProduto * saidas;
   }, [dadosDashboard]);
 
   // Configuração inicial de datas (últimos 30 dias)
@@ -179,7 +204,7 @@ export function Graficos() {
         {dadosDashboard && (
           <div className="space-y-8 animate-fade-in">
             {/* 1. KPI Cards - Indicadores Principais */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-6">
               {/* Faturamento */}
               <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
                 <div className="flex justify-between items-start">
@@ -227,6 +252,26 @@ export function Graficos() {
                   </div>
                   <span className="p-2 bg-cyan-100 text-cyan-600 rounded-lg text-xl">
                     🟢
+                  </span>
+                </div>
+              </div>
+
+              {/* Valor Total Recebido */}
+              <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                      Valor Total Recebido
+                    </p>
+                    <h3 className="text-2xl font-bold text-gray-900 mt-1">
+                      {formatMoney(
+                        (dadosDashboard?.totais?.dinheiro || 0) +
+                          (dadosDashboard?.totais?.pix || 0),
+                      )}
+                    </h3>
+                  </div>
+                  <span className="p-2 bg-purple-100 text-purple-600 rounded-lg text-xl">
+                    🏦
                   </span>
                 </div>
               </div>
