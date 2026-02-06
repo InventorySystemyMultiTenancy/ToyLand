@@ -14,11 +14,10 @@ export function MaquinaForm() {
   const [formData, setFormData] = useState({
     codigo: "",
     nome: "",
-    loja_id: "",
+    lojaId: "",
     tipo: "",
     capacidadePadrao: "",
-    valorFicha: "",
-    fichasNecessarias: "",
+    valorJogada: "",
     forcaForte: "",
     forcaFraca: "",
     forcaPremium: "",
@@ -63,11 +62,10 @@ export function MaquinaForm() {
       setFormData({
         codigo: response.data.codigo || "",
         nome: response.data.nome || "",
-        loja_id: response.data.lojaId ? String(response.data.lojaId) : "",
+        lojaId: response.data.lojaId ? String(response.data.lojaId) : "",
         tipo: response.data.tipo || "",
         capacidadePadrao: response.data.capacidadePadrao || "",
-        valorFicha: response.data.valorFicha || "",
-        fichasNecessarias: response.data.fichasNecessarias || "",
+        valorJogada: response.data.valorJogada || "",
         forcaForte: response.data.forcaForte || "",
         forcaFraca: response.data.forcaFraca || "",
         forcaPremium: response.data.forcaPremium || "",
@@ -110,7 +108,7 @@ export function MaquinaForm() {
         typeof formData.loja_id,
       ); // Debug
 
-      if (!formData.loja_id || formData.loja_id === "") {
+      if (!formData.lojaId || formData.lojaId === "") {
         setError("Por favor, selecione uma loja");
         setLoading(false);
         return;
@@ -125,11 +123,10 @@ export function MaquinaForm() {
       const data = {
         codigo: formData.codigo.trim(),
         nome: formData.nome.trim(),
-        lojaId: formData.loja_id,
+        lojaId: formData.lojaId,
         tipo: formData.tipo?.trim() || null,
         capacidadePadrao: parseInt(formData.capacidadePadrao, 10) || 0,
-        valorFicha: parseFloat(formData.valorFicha) || 0,
-        fichasNecessarias: parseInt(formData.fichasNecessarias, 10) || null,
+        valorJogada: parseFloat(formData.valorJogada) || 0,
         forcaForte: parseInt(formData.forcaForte, 10) || null,
         forcaFraca: parseInt(formData.forcaFraca, 10) || null,
         forcaPremium: parseInt(formData.forcaPremium, 10) || null,
@@ -235,8 +232,8 @@ export function MaquinaForm() {
                     Loja *
                   </label>
                   <select
-                    name="loja_id"
-                    value={formData.loja_id}
+                    name="lojaId"
+                    value={formData.lojaId}
                     onChange={handleChange}
                     className="select-field"
                     required
@@ -283,8 +280,154 @@ export function MaquinaForm() {
                   Configurações
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* ...todos os campos de configuração como antes... */}
-                  {/* ...existing code... */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Tipo de Máquina
+                    </label>
+                    <input
+                      type="text"
+                      name="tipo"
+                      value={formData.tipo}
+                      onChange={handleChange}
+                      className="input-field"
+                      placeholder="Ex: Garra, Empurrador, etc."
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Tipo ou modelo da máquina
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Capacidade Padrão *
+                    </label>
+                    <input
+                      type="number"
+                      name="capacidadePadrao"
+                      value={formData.capacidadePadrao}
+                      onChange={handleChange}
+                      className="input-field"
+                      placeholder="Ex: 100"
+                      min="0"
+                      required
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Capacidade máxima de produtos
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Valor da Jogada (R$)
+                    </label>
+                    <input
+                      type="number"
+                      name="valorJogada"
+                      value={formData.valorJogada}
+                      onChange={handleChange}
+                      className="input-field"
+                      placeholder="Ex: 2.00"
+                      min="0"
+                      step="0.01"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Valor cobrado por jogada
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      💪 Força Forte (%)
+                    </label>
+                    <input
+                      type="number"
+                      name="forcaForte"
+                      value={formData.forcaForte}
+                      onChange={handleChange}
+                      className="input-field"
+                      placeholder="Ex: 90"
+                      min="0"
+                      max="100"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Parâmetro de força forte da garra (0-100%)
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      🤏 Força Fraca (%)
+                    </label>
+                    <input
+                      type="number"
+                      name="forcaFraca"
+                      value={formData.forcaFraca}
+                      onChange={handleChange}
+                      className="input-field"
+                      placeholder="Ex: 30"
+                      min="0"
+                      max="100"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Parâmetro de força fraca da garra (0-100%)
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      ⭐ Força Premium (%)
+                    </label>
+                    <input
+                      type="number"
+                      name="forcaPremium"
+                      value={formData.forcaPremium}
+                      onChange={handleChange}
+                      className="input-field"
+                      placeholder="Ex: 100"
+                      min="0"
+                      max="100"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Parâmetro de força premium da garra (0-100%)
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      🎮 Jogadas para Força Premium
+                    </label>
+                    <input
+                      type="number"
+                      name="jogadasPremium"
+                      value={formData.jogadasPremium}
+                      onChange={handleChange}
+                      className="input-field"
+                      placeholder="Ex: 10"
+                      min="1"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Quantidade de jogadas com força premium
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Alerta de Estoque (%)
+                    </label>
+                    <input
+                      type="number"
+                      name="percentualAlertaEstoque"
+                      value={formData.percentualAlertaEstoque}
+                      onChange={handleChange}
+                      className="input-field"
+                      placeholder="Ex: 20"
+                      min="0"
+                      max="100"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Percentual mínimo para alerta (padrão: 20%)
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
