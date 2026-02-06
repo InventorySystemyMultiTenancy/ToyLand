@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import RegistrarDinheiro from "../components/RegistrarDinheiro";
 import api from "../services/api";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
@@ -20,6 +21,24 @@ export function Movimentacoes() {
   // --- ESTADOS ---
   const [movimentacoes, setMovimentacoes] = useState([]);
   const [movimentacoesEstoqueLoja, setMovimentacoesEstoqueLoja] = useState([]);
+
+  // Modal para registrar dinheiro
+  const [modalRegistrarDinheiro, setModalRegistrarDinheiro] = useState(false);
+  // Removido: valorDinheiro, obsDinheiro, salvandoDinheiro (serão controlados pelo componente)
+  const abrirModalRegistrarDinheiro = () => setModalRegistrarDinheiro(true);
+  const fecharModalRegistrarDinheiro = () => {
+    setModalRegistrarDinheiro(false);
+  };
+  const handleRegistrarDinheiro = async (dados) => {
+    try {
+      // Envie os dados para a API (endpoint correto)
+      await api.post("/registro-dinheiro", dados);
+      setSuccess("Dinheiro registrado com sucesso!");
+      fecharModalRegistrarDinheiro();
+    } catch (error) {
+      setError("Erro ao registrar dinheiro");
+    }
+  };
 
   // Filtros Estoque Loja
   const [filtroLojaEstoque, setFiltroLojaEstoque] = useState("");
@@ -616,6 +635,12 @@ export function Movimentacoes() {
             onClick: () => setShowForm(!showForm),
           }}
         />
+        <button
+          className="px-6 py-2 bg-blue-700 text-white rounded hover:bg-blue-800 font-bold shadow text-base"
+          onClick={() => setModalRegistrarDinheiro(true)}
+        >
+          Registrar Dinheiro
+        </button>
 
         {error && (
           <AlertBox type="error" message={error} onClose={() => setError("")} />
@@ -1371,6 +1396,37 @@ export function Movimentacoes() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Botão para abrir modal de registrar dinheiro (apenas ADMIN) */}
+      {usuario?.role === "ADMIN" && (
+        <div className="mb-6 flex justify-end">
+          <button
+            onClick={abrirModalRegistrarDinheiro}
+            className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded shadow"
+          >
+            Registrar Dinheiro
+          </button>
+        </div>
+      )}
+
+      {/* Modal Registrar Dinheiro */}
+      {modalRegistrarDinheiro && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="relative">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 z-10"
+              onClick={fecharModalRegistrarDinheiro}
+              style={{ right: 0, top: 0, position: "absolute" }}
+            >
+              ✕
+            </button>
+            <RegistrarDinheiro
+              lojas={lojas}
+              maquinas={maquinas}
+              onSubmit={handleRegistrarDinheiro}
+            />
           </div>
         </div>
       )}
