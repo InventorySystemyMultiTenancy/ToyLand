@@ -215,25 +215,65 @@ export function Relatorios() {
                 <div className="card bg-gradient-to-br from-yellow-400 to-yellow-600 text-white">
                   <div className="text-2xl sm:text-3xl mb-2">💵</div>
                   <div className="text-xl sm:text-2xl font-bold">
-                    R${" "}
-                    {Number(relatorio.totais?.dinheiro || 0).toLocaleString(
-                      "pt-BR",
-                      { minimumFractionDigits: 2 },
+                    {relatorio.totais &&
+                    typeof relatorio.totais.dinheiro !== "undefined" ? (
+                      <>
+                        R${" "}
+                        {Number(relatorio.totais.dinheiro).toLocaleString(
+                          "pt-BR",
+                          { minimumFractionDigits: 2 },
+                        )}
+                      </>
+                    ) : (
+                      <span className="text-gray-200">Sem registro</span>
                     )}
                   </div>
-                  <div className="text-xs sm:text-sm opacity-90">Dinheiro</div>
+                  <div className="text-xs sm:text-sm opacity-90">
+                    Dinheiro (por máquina)
+                  </div>
                 </div>
 
                 <div className="card bg-gradient-to-br from-cyan-400 to-cyan-600 text-white">
                   <div className="text-2xl sm:text-3xl mb-2">🟢</div>
                   <div className="text-xl sm:text-2xl font-bold">
-                    R${" "}
-                    {Number(relatorio.totais?.pix || 0).toLocaleString(
-                      "pt-BR",
-                      { minimumFractionDigits: 2 },
+                    {relatorio.totais &&
+                    typeof relatorio.totais.pix !== "undefined" ? (
+                      <>
+                        R${" "}
+                        {Number(relatorio.totais.pix).toLocaleString("pt-BR", {
+                          minimumFractionDigits: 2,
+                        })}
+                      </>
+                    ) : (
+                      <span className="text-gray-200">Sem registro</span>
                     )}
                   </div>
-                  <div className="text-xs sm:text-sm opacity-90">Pix</div>
+                  <div className="text-xs sm:text-sm opacity-90">
+                    Pix (por máquina)
+                  </div>
+                </div>
+
+                {/* Total consolidado da loja (Dinheiro + Pix) */}
+                <div className="card bg-gradient-to-br from-green-400 to-green-700 text-white flex flex-col justify-center items-center">
+                  <div className="text-2xl sm:text-3xl mb-2">💰</div>
+                  <div className="text-2xl sm:text-3xl font-bold">
+                    {relatorio.totais &&
+                    (typeof relatorio.totais.dinheiro !== "undefined" ||
+                      typeof relatorio.totais.pix !== "undefined") ? (
+                      <>
+                        R${" "}
+                        {Number(
+                          Number(relatorio.totais.dinheiro || 0) +
+                            Number(relatorio.totais.pix || 0),
+                        ).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                      </>
+                    ) : (
+                      <span className="text-gray-200">Sem registro</span>
+                    )}
+                  </div>
+                  <div className="text-xs sm:text-sm opacity-90">
+                    Total Loja (Dinheiro + Pix)
+                  </div>
                 </div>
 
                 <div className="card bg-gradient-to-br from-red-500 to-red-600 text-white">

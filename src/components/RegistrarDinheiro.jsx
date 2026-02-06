@@ -3,7 +3,6 @@ import React, { useState } from "react";
 const RegistrarDinheiro = ({ lojas, maquinas, onSubmit }) => {
   const [lojaSelecionada, setLojaSelecionada] = useState("");
   const [maquinaSelecionada, setMaquinaSelecionada] = useState("");
-  const [registrarTotalLoja, setRegistrarTotalLoja] = useState(false);
   const [inicio, setInicio] = useState("");
   const [fim, setFim] = useState("");
   const [valorDinheiro, setValorDinheiro] = useState("");
@@ -22,10 +21,13 @@ const RegistrarDinheiro = ({ lojas, maquinas, onSubmit }) => {
       alert("Preencha todos os campos obrigatórios: loja, início e fim.");
       return;
     }
+    if (!maquinaSelecionada) {
+      alert("Selecione a máquina para registrar o valor.");
+      return;
+    }
     await onSubmit({
       loja: lojaSelecionada,
-      maquina: registrarTotalLoja ? null : maquinaSelecionada || null,
-      registrarTotalLoja,
+      maquina: maquinaSelecionada,
       inicio,
       fim,
       valorDinheiro: valorDinheiro === "" ? null : valorDinheiro,
@@ -125,59 +127,29 @@ const RegistrarDinheiro = ({ lojas, maquinas, onSubmit }) => {
               </option>
             ))}
         </select>
-        <div
-          style={{
-            marginTop: 12,
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <input
-            type="checkbox"
-            id="registrarTotalLoja"
-            checked={registrarTotalLoja}
-            onChange={(e) => setRegistrarTotalLoja(e.target.checked)}
-            style={{ accentColor: "#e2cfa3", width: 18, height: 18 }}
-          />
-          <label
-            htmlFor="registrarTotalLoja"
-            style={{ fontSize: 15, color: "#a67c52" }}
-          >
-            Registrar valor total da loja (não selecionar máquina)
-          </label>
-        </div>
       </div>
       <div style={{ marginBottom: 18 }}>
         <label style={{ fontWeight: 600, color: "#a67c52" }}>Máquina:</label>
         <select
           value={maquinaSelecionada}
           onChange={(e) => setMaquinaSelecionada(e.target.value)}
+          required
           style={{
             width: "100%",
             marginTop: 6,
             padding: "10px 12px",
             borderRadius: 8,
             border: "1.5px solid #e2cfa3",
-            background: registrarTotalLoja ? "#f7ecd7" : "#fdf6e9",
+            background: "#fdf6e9",
             fontWeight: 500,
             color: "#a67c52",
             fontSize: 16,
-            opacity: registrarTotalLoja ? 0.6 : 1,
           }}
-          disabled={registrarTotalLoja}
         >
           <option value="">Selecione a máquina</option>
           {maquinas &&
             maquinas
-              .filter(
-                (m) =>
-                  m.lojaId === lojaSelecionada &&
-                  ((typeof m.nome === "string" &&
-                    m.nome.trim().toUpperCase().endsWith("TAKEBALL")) ||
-                    (typeof m.nome === "string" &&
-                      m.nome.toLowerCase().includes("poltrona"))),
-              )
+              .filter((m) => m.lojaId === lojaSelecionada)
               .map((maquina) => (
                 <option key={maquina.id} value={maquina.id}>
                   {maquina.nome}
@@ -306,6 +278,7 @@ const RegistrarDinheiro = ({ lojas, maquinas, onSubmit }) => {
           rows={3}
         />
       </div>
+      {/* Informação: agora obrigatório lançar por máquina, o sistema soma o total da loja automaticamente */}
       <div
         style={{
           color: "#a67c52",
@@ -318,12 +291,13 @@ const RegistrarDinheiro = ({ lojas, maquinas, onSubmit }) => {
         }}
       >
         <ul style={{ paddingLeft: 18, margin: 0 }}>
-          <li>Se marcar valor total da loja, não selecione máquina.</li>
           <li>
-            O lançamento do dinheiro de cada máquina não soma no dinheiro total
-            da loja.
+            Agora é obrigatório lançar o valor de cada máquina individualmente.
           </li>
-          <li>O dinheiro das fichas não soma mais no valor inteiro da loja.</li>
+          <li>
+            O sistema soma automaticamente o total da loja a partir dos
+            lançamentos das máquinas.
+          </li>
         </ul>
       </div>
       <button

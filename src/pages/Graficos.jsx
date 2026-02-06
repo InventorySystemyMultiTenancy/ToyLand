@@ -307,6 +307,42 @@ export function Graficos() {
                             stopOpacity={0}
                           />
                         </linearGradient>
+                        <linearGradient
+                          id="colorDinheiro"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="#F59E0B"
+                            stopOpacity={0.8}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="#F59E0B"
+                            stopOpacity={0}
+                          />
+                        </linearGradient>
+                        <linearGradient
+                          id="colorPix"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="#06B6D4"
+                            stopOpacity={0.8}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="#06B6D4"
+                            stopOpacity={0}
+                          />
+                        </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} />
                       <XAxis
@@ -321,7 +357,7 @@ export function Graficos() {
                       />
                       <YAxis tick={{ fontSize: 12 }} />
                       <Tooltip
-                        formatter={(value) => formatMoney(value)}
+                        formatter={(value, name) => [formatMoney(value), name]}
                         labelFormatter={(label) =>
                           new Date(label).toLocaleDateString("pt-BR")
                         }
@@ -334,6 +370,22 @@ export function Graficos() {
                         stroke="#10B981"
                         fillOpacity={1}
                         fill="url(#colorFat)"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="dinheiro"
+                        name="Dinheiro"
+                        stroke="#F59E0B"
+                        fillOpacity={0.7}
+                        fill="url(#colorDinheiro)"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="pix"
+                        name="Pix"
+                        stroke="#06B6D4"
+                        fillOpacity={0.7}
+                        fill="url(#colorPix)"
                       />
                       {/* Opcional: Se quiser mostrar Custo também */}
                       <Area

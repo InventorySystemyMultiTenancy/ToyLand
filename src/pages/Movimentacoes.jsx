@@ -36,7 +36,7 @@ export function Movimentacoes() {
       setSuccess("Dinheiro registrado com sucesso!");
       fecharModalRegistrarDinheiro();
     } catch (error) {
-      setError("Erro ao registrar dinheiro");
+      setError("Erro ao registrar dinheiro", error);
     }
   };
 
