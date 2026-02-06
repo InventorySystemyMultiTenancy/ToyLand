@@ -276,33 +276,6 @@ export function Graficos() {
                   </span>
                 </div>
               </div>
-
-              {/* Eficiência (Fichas Totais) */}
-              <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">
-                      Total Fichas
-                    </p>
-                    <h3 className="text-2xl font-bold text-gray-900 mt-1">
-                      {dadosDashboard.totais.fichas}
-                    </h3>
-                  </div>
-                  <span className="p-2 bg-purple-100 text-purple-600 rounded-lg text-xl">
-                    🎫
-                  </span>
-                </div>
-                <div className="mt-3 text-xs text-gray-500">
-                  Média:{" "}
-                  {dadosDashboard?.totais?.saidas > 0
-                    ? (
-                        dadosDashboard.totais.fichas /
-                        dadosDashboard.totais.saidas
-                      ).toFixed(1)
-                    : "0.0"}{" "}
-                  fichas/prêmio
-                </div>
-              </div>
             </div>
 
             {/* 2. Gráfico de Evolução Financeira */}
